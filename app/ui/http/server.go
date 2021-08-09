@@ -1,6 +1,8 @@
 package http
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +17,7 @@ func init() {
 func StartServer() {
 	mapUrls()
 
-	if err := router.Run(":8888"); err != nil {
+	if err := router.Run(os.Getenv("SERVER") + ":" + os.Getenv("PORT")); err != nil {
 		panic(err)
 	}
 }
