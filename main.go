@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/darkorsa/go-redis-client/app/ui/http"
+	"github.com/darkorsa/go-redis-http-client/internal/app"
 	"github.com/joho/godotenv"
 )
 
@@ -12,5 +12,5 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	http.StartServer()
+	app.StartServer()
 }
