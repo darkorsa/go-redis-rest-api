@@ -1,8 +1,20 @@
 package ports
 
-import "github.com/darkorsa/go-redis-http-client/internal/app/core/domain"
+import (
+	"time"
 
-type Service interface {
+	"github.com/darkorsa/go-redis-http-client/internal/app/core/domain"
+)
+
+type QueryService interface {
 	Get(key string) (*domain.Item, error)
 	GetAll() ([]*domain.Key, error)
+}
+
+type AuthService interface {
+	CreateToken(username string, tokenDuration time.Duration) (*domain.Token, error)
+}
+
+type UserService interface {
+	Get(username string) (*domain.User, error)
 }

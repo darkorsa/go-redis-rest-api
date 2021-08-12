@@ -43,7 +43,7 @@ func (r *redisRepository) Find(key string) (*domain.Item, error) {
 	val, err := r.client.Get(r.ctx, key).Result()
 	switch {
 	case err == redis.Nil:
-		return &domain.Item{}, nil
+		return nil, nil
 	case err != nil:
 		return nil, errors.Wrap(err, "GET command failed")
 	}

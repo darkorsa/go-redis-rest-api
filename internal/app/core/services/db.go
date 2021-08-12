@@ -5,17 +5,17 @@ import (
 	"github.com/darkorsa/go-redis-http-client/internal/app/core/ports"
 )
 
-type service struct {
+type queryService struct {
 	repository ports.Repository
 }
 
-func NewService(repository ports.Repository) *service {
-	return &service{
+func NewQueryService(repository ports.Repository) *queryService {
+	return &queryService{
 		repository: repository,
 	}
 }
 
-func (srv *service) Get(key string) (*domain.Item, error) {
+func (srv *queryService) Get(key string) (*domain.Item, error) {
 	item, err := srv.repository.Find(key)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func (srv *service) Get(key string) (*domain.Item, error) {
 	return item, nil
 }
 
-func (srv *service) GetAll() ([]*domain.Key, error) {
+func (srv *queryService) GetAll() ([]*domain.Key, error) {
 	items, err := srv.repository.FindAll()
 	if err != nil {
 		return nil, err

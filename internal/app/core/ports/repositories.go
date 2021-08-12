@@ -6,3 +6,7 @@ type Repository interface {
 	Find(key string) (*domain.Item, error)
 	FindAll() ([]*domain.Key, error)
 }
+
+type User interface {
+	Get(username string) (*domain.User, error)
+}

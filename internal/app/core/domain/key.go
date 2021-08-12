@@ -1,6 +1,5 @@
 package domain
 
-type Item struct {
-	Key   string `json:"key"`
+type Key struct {
 	Value string `json:"value"`
 }

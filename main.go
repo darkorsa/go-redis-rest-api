@@ -3,14 +3,17 @@ package main
 import (
 	"log"
 
-	"github.com/darkorsa/go-redis-http-client/internal/app"
-	"github.com/joho/godotenv"
+	"github.com/darkorsa/go-redis-http-client/internal/app/api"
+	"github.com/darkorsa/go-redis-http-client/internal/app/util"
 )
 
 func main() {
-	err := godotenv.Load()
+	config, err := util.LoadConfig(".")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("cannot load config:", err)
 	}
-	app.StartServer()
+
+	server, _ := api.NewServer(&config)
+
+	server.StartServer()
 }
