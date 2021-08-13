@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 
 	"github.com/darkorsa/go-redis-http-client/internal/app/core/domain"
@@ -40,23 +41,26 @@ func NewRedisRepository(server string, port string, password string, db int) (po
 }
 
 func (r *redisRepository) Find(key string) (*domain.Item, error) {
-	val, err := r.client.Get(r.ctx, key).Result()
-	switch {
-	case err == redis.Nil:
+	t, err := r.client.Type(r.ctx, key).Result()
+
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to get key value type")
+	}
+
+	if t == "string" {
+		return r.fetchString(key)
+	} else if t == "list" {
+		return r.fetchList(key)
+	} else if t == "set" {
+		return r.fetchSet(key)
+	} else if t == "none" {
 		return nil, nil
-	case err != nil:
-		return nil, errors.Wrap(err, "GET command failed")
+	} else {
+		return nil, fmt.Errorf("type: %s is not supported", t)
 	}
-
-	item := domain.Item{
-		Key:   key,
-		Value: val,
-	}
-
-	return &item, nil
 }
 
-func (r *redisRepository) FindAll() ([]*domain.Key, error) {
+func (r *redisRepository) FindAll() (*domain.Keys, error) {
 	res, err := r.client.Do(r.ctx, "KEYS", "*").Result()
 
 	if err != nil {
@@ -65,13 +69,70 @@ func (r *redisRepository) FindAll() ([]*domain.Key, error) {
 
 	s := reflect.ValueOf(res)
 
-	items := []*domain.Key{}
+	var items []string
 	for i := 0; i < s.Len(); i++ {
-		item := domain.Key{
-			Value: s.Index(i).Interface().(string),
-		}
-		items = append(items, &item)
+		items = append(items, s.Index(i).Interface().(string))
 	}
 
-	return items, nil
+	keys := domain.Keys{
+		Keys: items,
+	}
+
+	return &keys, nil
+}
+
+func (r *redisRepository) fetchString(key string) (*domain.Item, error) {
+	res, err := r.client.Get(r.ctx, key).Result()
+
+	switch {
+	case err == redis.Nil:
+		return nil, nil
+	case err != nil:
+		return nil, err
+	}
+
+	var val []string
+
+	item := domain.Item{
+		Key:   key,
+		Value: append(val, res),
+	}
+
+	return &item, nil
+}
+
+func (r *redisRepository) fetchList(key string) (*domain.Item, error) {
+	res, err := r.client.LRange(r.ctx, key, 0, -1).Result()
+
+	switch {
+	case err == redis.Nil:
+		return nil, nil
+	case err != nil:
+		return nil, err
+	}
+
+	item := domain.Item{
+		Key:   key,
+		Value: res,
+	}
+
+	return &item, nil
+}
+
+func (r *redisRepository) fetchSet(key string) (*domain.Item, error) {
+	res, err := r.client.SMembers(r.ctx, key).Result()
+
+	switch {
+	case err == redis.Nil:
+		return nil, nil
+	case err != nil:
+		return nil, err
+	}
+
+	item := domain.Item{
+		Key:   key,
+		Value: res,
+	}
+
+	return &item, nil
 }

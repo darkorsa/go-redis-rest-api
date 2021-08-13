@@ -8,7 +8,7 @@ import (
 
 type QueryService interface {
 	Get(key string) (*domain.Item, error)
-	GetAll() ([]*domain.Key, error)
+	GetAll() (*domain.Keys, error)
 }
 
 type AuthService interface {

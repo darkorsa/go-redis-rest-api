@@ -24,7 +24,7 @@ func (srv *queryService) Get(key string) (*domain.Item, error) {
 	return item, nil
 }
 
-func (srv *queryService) GetAll() ([]*domain.Key, error) {
+func (srv *queryService) GetAll() (*domain.Keys, error) {
 	items, err := srv.repository.FindAll()
 	if err != nil {
 		return nil, err

@@ -1,6 +1,6 @@
 package domain
 
 type Item struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
+	Key   string   `json:"key"`
+	Value []string `json:"value"`
 }
