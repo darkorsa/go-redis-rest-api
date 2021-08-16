@@ -9,6 +9,7 @@ import (
 type QueryService interface {
 	Get(key string) (*domain.Item, error)
 	GetAll() (*domain.Keys, error)
+	Del(key string) (int64, error)
 }
 
 type AuthService interface {

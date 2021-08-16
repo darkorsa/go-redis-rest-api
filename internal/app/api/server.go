@@ -61,6 +61,7 @@ func (s *Server) StartServer() {
 	{
 		authorized.GET("/keys/:id", s.GetKey)
 		authorized.GET("/keys", s.GetKeys)
+		authorized.DELETE("/keys/:id", s.DelKey)
 	}
 
 	if err := r.Run(s.config.ServerAddress); err != nil {

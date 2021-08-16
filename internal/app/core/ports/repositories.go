@@ -3,8 +3,9 @@ package ports
 import "github.com/darkorsa/go-redis-http-client/internal/app/core/domain"
 
 type Repository interface {
-	Find(key string) (*domain.Item, error)
-	FindAll() (*domain.Keys, error)
+	Get(key string) (*domain.Item, error)
+	GetAll() (*domain.Keys, error)
+	Del(key string) (int64, error)
 }
 
 type User interface {
