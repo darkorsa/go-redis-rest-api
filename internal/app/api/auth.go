@@ -1,7 +1,6 @@
 package api
 
 import (
-	apiErrors "github.com/darkorsa/go-redis-http-client/internal/pkg/api-errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,30 +9,26 @@ func (s *Server) GetToken(c *gin.Context) {
 	password := c.PostForm("password")
 
 	if username == "" || password == "" {
-		apiErr := apiErrors.NewBadRequestError("no username or password provided")
-		c.JSON(apiErr.GetStatus(), apiErr)
+		s.badRequestError("no username or password provided", c)
 		return
 	}
 
 	user, err := s.userService.Get(username)
 
 	if err != nil {
-		apiErr := apiErrors.NewUnauthorizedError("invalid username or password")
-		c.JSON(apiErr.GetStatus(), apiErr)
+		s.badRequestError("invalid username or password", c)
 		return
 	}
 
 	if user.GetPassword() != password {
-		apiErr := apiErrors.NewUnauthorizedError("invaild username or password")
-		c.JSON(apiErr.GetStatus(), apiErr)
+		s.badRequestError("invalid username or password", c)
 		return
 	}
 
 	token, err := s.authService.CreateToken(username, s.config.AccessTokenDuration)
 
 	if err != nil {
-		apiErr := apiErrors.NewInternalServerError("error while getting item", err)
-		c.JSON(apiErr.GetStatus(), apiErr)
+		s.internalServerError(err.Error(), c)
 		return
 	}
 

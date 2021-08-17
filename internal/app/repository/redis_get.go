@@ -34,7 +34,7 @@ func (r *redisRepository) Get(key string) (*domain.Item, error) {
 	}
 }
 
-func (r *redisRepository) GetAll() (*domain.Keys, error) {
+func (r *redisRepository) List() (*domain.Keys, error) {
 	res, err := r.client.Do(r.ctx, "KEYS", "*").Result()
 
 	if err != nil {
@@ -75,22 +75,7 @@ func (r *redisRepository) fetchString(key string) (*domain.Item, error) {
 }
 
 func (r *redisRepository) fetchList(key string) (*domain.Item, error) {
-	res, err := r.client.LRange(r.ctx, key, 0, -1).Result()
-
-	switch {
-	case err == redis.Nil:
-		return nil, nil
-	case err != nil:
-		return nil, err
-	}
-
-	item := domain.Item{
-		Key:   key,
-		Type:  TYPE_LIST,
-		Value: res,
-	}
-
-	return &item, nil
+	return r.LRange(key, 0, -1)
 }
 
 func (r *redisRepository) fetchSet(key string) (*domain.Item, error) {

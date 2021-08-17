@@ -5,6 +5,7 @@ import (
 	"github.com/darkorsa/go-redis-http-client/internal/app/core/services"
 	"github.com/darkorsa/go-redis-http-client/internal/app/repository"
 	"github.com/darkorsa/go-redis-http-client/internal/app/util"
+	apiErrors "github.com/darkorsa/go-redis-http-client/internal/pkg/api-errors"
 	"github.com/darkorsa/go-redis-http-client/internal/pkg/token"
 	"github.com/gin-gonic/gin"
 )
@@ -62,9 +63,28 @@ func (s *Server) StartServer() {
 		authorized.GET("/keys/:id", s.GetKey)
 		authorized.GET("/keys", s.GetKeys)
 		authorized.DELETE("/keys/:id", s.DelKey)
+		authorized.GET("/list/key/:id", s.ListGet)
+		authorized.DELETE("/list/key/:id", s.ListDel)
+		authorized.POST("/list/rpush/key/:id", s.ListRPush)
+		authorized.POST("/list/lpush/key/:id", s.ListLPush)
 	}
 
 	if err := r.Run(s.config.ServerAddress); err != nil {
 		panic(err)
 	}
+}
+
+func (s *Server) badRequestError(msg string, c *gin.Context) {
+	apiErr := apiErrors.NewBadRequestError(msg)
+	c.JSON(apiErr.GetStatus(), apiErr)
+}
+
+func (s *Server) internalServerError(mgs string, c *gin.Context) {
+	apiErr := apiErrors.NewInternalServerError(mgs)
+	c.JSON(apiErr.GetStatus(), apiErr)
+}
+
+func (s *Server) notFoundError(msg string, c *gin.Context) {
+	apiErr := apiErrors.NewNotFoundError(msg)
+	c.JSON(apiErr.GetStatus(), apiErr)
 }

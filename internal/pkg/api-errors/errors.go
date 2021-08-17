@@ -10,14 +10,12 @@ type ApiErrorInterface interface {
 	GetMessage() string
 	GetStatus() int
 	GetError() string
-	GetInfo() []interface{}
 }
 
 type apiError struct {
-	Message string        `json:"message"`
-	Status  int           `json:"status"`
-	Error   string        `json:"error"`
-	Info    []interface{} `json:"info"`
+	Message string `json:"message"`
+	Status  int    `json:"status"`
+	Error   string `json:"error"`
 }
 
 func (e apiError) GetMessage() string {
@@ -32,16 +30,11 @@ func (e apiError) GetError() string {
 	return e.Error
 }
 
-func (e apiError) GetInfo() []interface{} {
-	return e.Info
-}
-
-func NewError(message string, status int, err string, info []interface{}) ApiErrorInterface {
+func NewError(message string, status int, err string) ApiErrorInterface {
 	return apiError{
 		Message: message,
 		Status:  status,
 		Error:   err,
-		Info:    info,
 	}
 }
 
@@ -77,14 +70,12 @@ func NewUnauthorizedError(message string) ApiErrorInterface {
 	}
 }
 
-func NewInternalServerError(message string, err error) ApiErrorInterface {
+func NewInternalServerError(message string) ApiErrorInterface {
 	result := apiError{
 		Message: message,
 		Status:  http.StatusInternalServerError,
 		Error:   "internal_server_error",
 	}
-	if err != nil {
-		result.Info = append(result.Info, err.Error())
-	}
+
 	return result
 }

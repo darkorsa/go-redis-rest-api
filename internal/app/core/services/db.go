@@ -16,28 +16,29 @@ func NewQueryService(repository ports.Repository) *queryService {
 }
 
 func (srv *queryService) Get(key string) (*domain.Item, error) {
-	item, err := srv.repository.Get(key)
-	if err != nil {
-		return nil, err
-	}
-
-	return item, nil
+	return srv.repository.Get(key)
 }
 
-func (srv *queryService) GetAll() (*domain.Keys, error) {
-	items, err := srv.repository.GetAll()
-	if err != nil {
-		return nil, err
-	}
-
-	return items, nil
+func (srv *queryService) List() (*domain.Keys, error) {
+	return srv.repository.List()
 }
 
 func (srv *queryService) Del(key string) (int64, error) {
-	res, err := srv.repository.Del(key)
-	if err != nil {
-		return 0, err
-	}
+	return srv.repository.Del(key)
+}
 
-	return res, nil
+func (srv *queryService) LRange(key string, start int64, stop int64) (*domain.Item, error) {
+	return srv.repository.LRange(key, start, stop)
+}
+
+func (srv *queryService) RPush(key string, value string) (int64, error) {
+	return srv.repository.RPush(key, []byte(value))
+}
+
+func (srv *queryService) LPush(key string, value string) (int64, error) {
+	return srv.repository.LPush(key, []byte(value))
+}
+
+func (srv *queryService) LRem(key string, count int64, value string) (int64, error) {
+	return srv.repository.LRem(key, count, value)
 }
