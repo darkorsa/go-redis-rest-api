@@ -7,6 +7,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type actionResponse struct {
+	Result   string `json:"result"`
+	Affected int64  `json:"affected"`
+}
+
+// @Summary Get key
+// @Description Get value for key ID
+// @Tags keys
+// @Produce json
+// @Param id path string true "Key ID"
+// @Success 200 {object} domain.Item
+// @Failure 404 {object} apiErrors.apiError
+// @Failure 500 {object} apiErrors.apiError
+// @Router /keys/{id} [get]
 func (s *Server) GetKey(c *gin.Context) {
 	item, queryErr := s.queryService.Get(c.Param("id"))
 	if queryErr != nil {
@@ -22,6 +36,13 @@ func (s *Server) GetKey(c *gin.Context) {
 	c.JSON(200, item)
 }
 
+// @Summary Get keys
+// @Description Get list of keys
+// @Tags keys
+// @Produce json
+// @Success 200 {object} domain.Keys
+// @Failure 500 {object} apiErrors.apiError
+// @Router /keys [get]
 func (s *Server) GetKeys(c *gin.Context) {
 	items, err := s.queryService.List()
 	if err != nil {
@@ -32,6 +53,15 @@ func (s *Server) GetKeys(c *gin.Context) {
 	c.JSON(200, items)
 }
 
+// @Summary Delete key
+// @Description Delete key by ID
+// @Tags keys
+// @Produce json
+// @Param id path string true "Key ID"
+// @Success 200 {object} actionResponse
+// @Failure 404 {object} apiErrors.apiError
+// @Failure 500 {object} apiErrors.apiError
+// @Router /keys/{id} [delete]
 func (s *Server) DelKey(c *gin.Context) {
 	res, err := s.queryService.Del(c.Param("id"))
 
@@ -45,14 +75,24 @@ func (s *Server) DelKey(c *gin.Context) {
 		return
 	}
 
-	ok := map[string]string{
-		"result":   "OK",
-		"affected": strconv.FormatInt(res, 10),
+	ok := actionResponse{
+		Result:   "OK",
+		Affected: res,
 	}
 
 	c.JSON(200, ok)
 }
 
+// @Summary Get list
+// @Description Get elements of the list
+// @Tags lists
+// @Produce json
+// @Param id path string true "Key ID"
+// @Param start query int false "Offset"
+// @Param stop query int false "Limit"
+// @Success 200 {object} domain.Item
+// @Failure 400,500 {object} apiErrors.apiError
+// @Router /list/key/:id [get]
 func (s *Server) ListGet(c *gin.Context) {
 	key := c.Param("id")
 
@@ -85,10 +125,30 @@ func (s *Server) ListGet(c *gin.Context) {
 	c.JSON(200, items)
 }
 
+// @Summary List LPUSH
+// @Description Insert all the specified values at the head of the list stored at key.
+// @Tags lists
+// @Accept x-www-form-urlencoded
+// @Produce json
+// @Param id path string true "Key ID"
+// @Param value formData string true "Value"
+// @Success 200 {object} actionResponse
+// @Failure 400,500 {object} apiErrors.apiError
+// @Router /list/lpush/key/:id [post]
 func (s *Server) ListLPush(c *gin.Context) {
 	s.listPush("LPush", c)
 }
 
+// @Summary List RPUSH
+// @Description Insert all the specified values at the tail of the list stored at key.
+// @Tags lists
+// @Accept x-www-form-urlencoded
+// @Produce json
+// @Param id path string true "Key ID"
+// @Param value formData string true "Value"
+// @Success 200 {object} actionResponse
+// @Failure 400,500 {object} apiErrors.apiError
+// @Router /list/rpush/key/:id [post]
 func (s *Server) ListRPush(c *gin.Context) {
 	s.listPush("RPush", c)
 }
@@ -114,13 +174,24 @@ func (s *Server) listPush(method string, c *gin.Context) {
 		return
 	}
 
-	ok := map[string]string{
-		"result": "OK",
+	ok := actionResponse{
+		Result:   "OK",
+		Affected: val[0].Interface().(int64),
 	}
 
 	c.JSON(200, ok)
 }
 
+// @Summary List delete
+// @Description Removes the first count occurrences of elements equal to element from the list stored at key.
+// @Tags lists
+// @Produce json
+// @Param id path string true "Key ID"
+// @Param value formData string true "Value"
+// @Param count query int false "Count"
+// @Success 200 {object} actionResponse
+// @Failure 400,500 {object} apiErrors.apiError
+// @Router /list/key/:id [DELETE]
 func (s *Server) ListDel(c *gin.Context) {
 	var count int64 = 0
 	var err error
@@ -145,9 +216,9 @@ func (s *Server) ListDel(c *gin.Context) {
 		return
 	}
 
-	ok := map[string]string{
-		"result":   "OK",
-		"affected": strconv.FormatInt(res, 10),
+	ok := actionResponse{
+		Result:   "OK",
+		Affected: res,
 	}
 
 	c.JSON(200, ok)

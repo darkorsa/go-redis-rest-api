@@ -1,0 +1,253 @@
+definitions:
+  api.actionResponse:
+    properties:
+      affected:
+        type: integer
+      result:
+        type: string
+    type: object
+  apiErrors.apiError:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  domain.Item:
+    properties:
+      key:
+        type: string
+      type:
+        type: string
+      value:
+        type: object
+    type: object
+  domain.Keys:
+    properties:
+      keys:
+        items:
+          type: string
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /keys:
+    get:
+      description: Get list of keys
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Keys'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: Get keys
+      tags:
+      - keys
+  /keys/{id}:
+    delete:
+      description: Delete key by ID
+      parameters:
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.actionResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: Delete key
+      tags:
+      - keys
+    get:
+      description: Get value for key ID
+      parameters:
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Item'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: Get key
+      tags:
+      - keys
+  /list/key/:id:
+    delete:
+      description: Removes the first count occurrences of elements equal to element
+        from the list stored at key.
+      parameters:
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Value
+        in: formData
+        name: value
+        required: true
+        type: string
+      - description: Count
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.actionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: List delete
+      tags:
+      - lists
+    get:
+      description: Get elements of the list
+      parameters:
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Offset
+        in: query
+        name: start
+        type: integer
+      - description: Limit
+        in: query
+        name: stop
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Item'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: Get list
+      tags:
+      - lists
+  /list/lpush/key/:id:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Insert all the specified values at the head of the list stored
+        at key.
+      parameters:
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Value
+        in: formData
+        name: value
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.actionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: List LPUSH
+      tags:
+      - lists
+  /list/rpush/key/:id:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Insert all the specified values at the tail of the list stored
+        at key.
+      parameters:
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Value
+        in: formData
+        name: value
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.actionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: List RPUSH
+      tags:
+      - lists
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

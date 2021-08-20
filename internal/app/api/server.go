@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/darkorsa/go-redis-http-client/docs"
 	"github.com/darkorsa/go-redis-http-client/internal/app/core/ports"
 	"github.com/darkorsa/go-redis-http-client/internal/app/core/services"
 	"github.com/darkorsa/go-redis-http-client/internal/app/repository"
@@ -8,6 +9,8 @@ import (
 	apiErrors "github.com/darkorsa/go-redis-http-client/internal/pkg/api-errors"
 	"github.com/darkorsa/go-redis-http-client/internal/pkg/token"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -52,6 +55,10 @@ func NewServer(config *util.Config) (*Server, error) {
 	return server, nil
 }
 
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 func (s *Server) StartServer() {
 	r := gin.Default()
 
@@ -68,6 +75,15 @@ func (s *Server) StartServer() {
 		authorized.POST("/list/rpush/key/:id", s.ListRPush)
 		authorized.POST("/list/lpush/key/:id", s.ListLPush)
 	}
+
+	docs.SwaggerInfo.Title = "Redis API"
+	docs.SwaggerInfo.Description = "API providing access to Redis database."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = s.config.ServerAddress
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
+	r.GET("/apidocs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if err := r.Run(s.config.ServerAddress); err != nil {
 		panic(err)
