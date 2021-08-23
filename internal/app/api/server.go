@@ -8,6 +8,7 @@ import (
 	"github.com/darkorsa/go-redis-http-client/internal/app/util"
 	apiErrors "github.com/darkorsa/go-redis-http-client/internal/pkg/api-errors"
 	"github.com/darkorsa/go-redis-http-client/internal/pkg/token"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -85,6 +86,10 @@ func (s *Server) StartServer() {
 
 	r.GET("/apidocs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	config := cors.DefaultConfig()
+	config.AllowOrigins = s.config.AllowedOrigins
+
+	r.Use(cors.New(config))
 	if err := r.Run(s.config.ServerAddress); err != nil {
 		panic(err)
 	}

@@ -18,6 +18,7 @@ type Config struct {
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 	AuthUsername        string        `mapstructure:"AUTH_USERNAME"`
 	AuthPassword        string        `mapstructure:"AUTH_PASSWORD"`
+	AllowedOrigins      []string      `mapstructure:"ALLOWED_ORIGINS"`
 }
 
 // LoadConfig reads configuration from file or environment variables.
