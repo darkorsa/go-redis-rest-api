@@ -4,6 +4,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Auth token
+// @Description Generate auth token
+// @Tags auth
+// @Produce json
+// @Param username formData string true "Username"
+// @Param passwprd formData string true "User password"
+// @Success 200 {object} domain.Token
+// @Failure 400 {object} apiErrors.apiError
+// @Failure 500 {object} apiErrors.apiError
+// @Router /token [post]
 func (s *Server) GetToken(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
