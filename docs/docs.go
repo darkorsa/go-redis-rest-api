@@ -25,7 +25,7 @@ var doc = `{
     "paths": {
         "/keys": {
             "get": {
-                "description": "Get list of keys",
+                "description": "Get list of all keys",
                 "produces": [
                     "application/json"
                 ],
@@ -38,6 +38,47 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/domain.Keys"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiErrors.apiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/keys/find": {
+            "get": {
+                "description": "Get list of keys matching pattern",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "keys"
+                ],
+                "summary": "Find keys",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pattern",
+                        "name": "p",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Keys"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apiErrors.apiError"
                         }
                     },
                     "500": {
@@ -129,7 +170,7 @@ var doc = `{
                 }
             }
         },
-        "/list/key/:id": {
+        "/list/key/{id}": {
             "get": {
                 "description": "Get elements of the list",
                 "produces": [
@@ -234,7 +275,7 @@ var doc = `{
                 }
             }
         },
-        "/list/lpush/key/:id": {
+        "/list/lpush/key/{id}": {
             "post": {
                 "description": "Insert all the specified values at the head of the list stored at key.",
                 "consumes": [
@@ -285,7 +326,7 @@ var doc = `{
                 }
             }
         },
-        "/list/rpush/key/:id": {
+        "/list/rpush/key/{id}": {
             "post": {
                 "description": "Insert all the specified values at the tail of the list stored at key.",
                 "consumes": [

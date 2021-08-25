@@ -35,7 +35,11 @@ func (r *redisRepository) Get(key string) (*domain.Item, error) {
 }
 
 func (r *redisRepository) List() (*domain.Keys, error) {
-	res, err := r.client.Do(r.ctx, "KEYS", "*").Result()
+	return r.Find("*")
+}
+
+func (r *redisRepository) Find(pattern string) (*domain.Keys, error) {
+	res, err := r.client.Do(r.ctx, "KEYS", pattern).Result()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "KEYS * command failed")

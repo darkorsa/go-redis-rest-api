@@ -23,6 +23,10 @@ func (srv *queryService) List() (*domain.Keys, error) {
 	return srv.repository.List()
 }
 
+func (srv *queryService) Find(pattern string) (*domain.Keys, error) {
+	return srv.repository.Find(pattern)
+}
+
 func (srv *queryService) Del(key string) (int64, error) {
 	return srv.repository.Del(key)
 }

@@ -70,6 +70,7 @@ func (s *Server) StartServer() {
 	{
 		authorized.GET("/keys/:id", s.GetKey)
 		authorized.GET("/keys", s.GetKeys)
+		authorized.GET("/keys/find", s.FindKeys)
 		authorized.DELETE("/keys/:id", s.DelKey)
 		authorized.GET("/list/key/:id", s.ListGet)
 		authorized.DELETE("/list/key/:id", s.ListDel)

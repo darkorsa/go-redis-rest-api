@@ -22,29 +22,52 @@ type actionResponse struct {
 // @Failure 500 {object} apiErrors.apiError
 // @Router /keys/{id} [get]
 func (s *Server) GetKey(c *gin.Context) {
-	item, queryErr := s.queryService.Get(c.Param("id"))
+	key, queryErr := s.queryService.Get(c.Param("id"))
 	if queryErr != nil {
 		s.internalServerError(queryErr.Error(), c)
 		return
 	}
 
-	if item == nil {
+	if key == nil {
 		s.notFoundError("key not found", c)
 		return
 	}
 
-	c.JSON(200, item)
+	c.JSON(200, key)
 }
 
 // @Summary Get keys
-// @Description Get list of keys
+// @Description Get list of all keys
 // @Tags keys
 // @Produce json
 // @Success 200 {object} domain.Keys
 // @Failure 500 {object} apiErrors.apiError
 // @Router /keys [get]
 func (s *Server) GetKeys(c *gin.Context) {
-	items, err := s.queryService.List()
+	keys, err := s.queryService.List()
+	if err != nil {
+		s.internalServerError(err.Error(), c)
+		return
+	}
+
+	c.JSON(200, keys)
+}
+
+// @Summary Find keys
+// @Description Get list of keys matching pattern
+// @Tags keys
+// @Produce json
+// @Param p query string true "Pattern"
+// @Success 200 {object} domain.Keys
+// @Failure 400,500 {object} apiErrors.apiError
+// @Router /keys/find [get]
+func (s *Server) FindKeys(c *gin.Context) {
+	if len(c.Query("p")) == 0 {
+		s.badRequestError("pattern parameter required", c)
+		return
+	}
+
+	items, err := s.queryService.Find(c.Query("p"))
 	if err != nil {
 		s.internalServerError(err.Error(), c)
 		return
@@ -92,7 +115,7 @@ func (s *Server) DelKey(c *gin.Context) {
 // @Param stop query int false "Limit"
 // @Success 200 {object} domain.Item
 // @Failure 400,500 {object} apiErrors.apiError
-// @Router /list/key/:id [get]
+// @Router /list/key/{id} [get]
 func (s *Server) ListGet(c *gin.Context) {
 	key := c.Param("id")
 
@@ -134,7 +157,7 @@ func (s *Server) ListGet(c *gin.Context) {
 // @Param value formData string true "Value"
 // @Success 200 {object} actionResponse
 // @Failure 400,500 {object} apiErrors.apiError
-// @Router /list/lpush/key/:id [post]
+// @Router /list/lpush/key/{id} [post]
 func (s *Server) ListLPush(c *gin.Context) {
 	s.listPush("LPush", c)
 }
@@ -148,7 +171,7 @@ func (s *Server) ListLPush(c *gin.Context) {
 // @Param value formData string true "Value"
 // @Success 200 {object} actionResponse
 // @Failure 400,500 {object} apiErrors.apiError
-// @Router /list/rpush/key/:id [post]
+// @Router /list/rpush/key/{id} [post]
 func (s *Server) ListRPush(c *gin.Context) {
 	s.listPush("RPush", c)
 }
@@ -191,7 +214,7 @@ func (s *Server) listPush(method string, c *gin.Context) {
 // @Param count query int false "Count"
 // @Success 200 {object} actionResponse
 // @Failure 400,500 {object} apiErrors.apiError
-// @Router /list/key/:id [DELETE]
+// @Router /list/key/{id} [DELETE]
 func (s *Server) ListDel(c *gin.Context) {
 	var count int64 = 0
 	var err error

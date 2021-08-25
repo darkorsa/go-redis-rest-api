@@ -43,7 +43,7 @@ info:
 paths:
   /keys:
     get:
-      description: Get list of keys
+      description: Get list of all keys
       produces:
       - application/json
       responses:
@@ -111,7 +111,34 @@ paths:
       summary: Get key
       tags:
       - keys
-  /list/key/:id:
+  /keys/find:
+    get:
+      description: Get list of keys matching pattern
+      parameters:
+      - description: Pattern
+        in: query
+        name: p
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Keys'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: Find keys
+      tags:
+      - keys
+  /list/key/{id}:
     delete:
       description: Removes the first count occurrences of elements equal to element
         from the list stored at key.
@@ -182,7 +209,7 @@ paths:
       summary: Get list
       tags:
       - lists
-  /list/lpush/key/:id:
+  /list/lpush/key/{id}:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -217,7 +244,7 @@ paths:
       summary: List LPUSH
       tags:
       - lists
-  /list/rpush/key/:id:
+  /list/rpush/key/{id}:
     post:
       consumes:
       - application/x-www-form-urlencoded
