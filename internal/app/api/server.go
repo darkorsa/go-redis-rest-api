@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strings"
+
 	"github.com/darkorsa/go-redis-http-client/docs"
 	"github.com/darkorsa/go-redis-http-client/internal/app/core/ports"
 	"github.com/darkorsa/go-redis-http-client/internal/app/core/services"
@@ -8,7 +10,6 @@ import (
 	"github.com/darkorsa/go-redis-http-client/internal/app/util"
 	apiErrors "github.com/darkorsa/go-redis-http-client/internal/pkg/api-errors"
 	"github.com/darkorsa/go-redis-http-client/internal/pkg/token"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -62,6 +63,7 @@ func NewServer(config *util.Config) (*Server, error) {
 
 func (s *Server) StartServer() {
 	r := gin.Default()
+	r.Use(s.cors())
 
 	r.POST("/token", s.GetToken)
 
@@ -87,12 +89,24 @@ func (s *Server) StartServer() {
 
 	r.GET("/apidocs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	config := cors.DefaultConfig()
-	config.AllowOrigins = s.config.AllowedOrigins
-
-	r.Use(cors.New(config))
 	if err := r.Run(s.config.ServerAddress); err != nil {
 		panic(err)
+	}
+}
+
+func (s *Server) cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", strings.Join(s.config.AllowedOrigins, ","))
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
 	}
 }
 
