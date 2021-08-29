@@ -3,9 +3,9 @@ package repository
 import (
 	"fmt"
 
-	"github.com/darkorsa/go-redis-http-client/internal/app/core/domain"
-	"github.com/darkorsa/go-redis-http-client/internal/app/core/ports"
-	"github.com/darkorsa/go-redis-http-client/internal/app/util"
+	"github.com/darkorsa/go-redis-rest-api/internal/app/core/domain"
+	"github.com/darkorsa/go-redis-rest-api/internal/app/core/ports"
+	"github.com/darkorsa/go-redis-rest-api/internal/app/util"
 )
 
 type userRepository struct {

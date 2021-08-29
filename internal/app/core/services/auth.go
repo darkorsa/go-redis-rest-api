@@ -3,8 +3,8 @@ package services
 import (
 	"time"
 
-	"github.com/darkorsa/go-redis-http-client/internal/app/core/domain"
-	"github.com/darkorsa/go-redis-http-client/internal/pkg/token"
+	"github.com/darkorsa/go-redis-rest-api/internal/app/core/domain"
+	"github.com/darkorsa/go-redis-rest-api/internal/pkg/token"
 )
 
 type authService struct {

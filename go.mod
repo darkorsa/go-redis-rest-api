@@ -1,4 +1,4 @@
-module github.com/darkorsa/go-redis-http-client
+module github.com/darkorsa/go-redis-rest-api
 
 go 1.16
 

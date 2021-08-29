@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/darkorsa/go-redis-http-client/internal/app/core/domain"
+	"github.com/darkorsa/go-redis-rest-api/internal/app/core/domain"
 	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
 )

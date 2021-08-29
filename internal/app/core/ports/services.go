@@ -3,7 +3,7 @@ package ports
 import (
 	"time"
 
-	"github.com/darkorsa/go-redis-http-client/internal/app/core/domain"
+	"github.com/darkorsa/go-redis-rest-api/internal/app/core/domain"
 )
 
 type QueryService interface {

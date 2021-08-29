@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/darkorsa/go-redis-http-client/internal/app/api"
-	"github.com/darkorsa/go-redis-http-client/internal/app/util"
+	"github.com/darkorsa/go-redis-rest-api/internal/app/api"
+	"github.com/darkorsa/go-redis-rest-api/internal/app/util"
 )
 
 func main() {

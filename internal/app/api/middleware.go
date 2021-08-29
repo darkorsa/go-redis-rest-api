@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	apiErrors "github.com/darkorsa/go-redis-http-client/internal/pkg/api-errors"
-	"github.com/darkorsa/go-redis-http-client/internal/pkg/token"
+	apiErrors "github.com/darkorsa/go-redis-rest-api/internal/pkg/api-errors"
+	"github.com/darkorsa/go-redis-rest-api/internal/pkg/token"
 	"github.com/gin-gonic/gin"
 )
 
