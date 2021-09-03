@@ -30,6 +30,49 @@
                 }
             }
         },
+        "/keys/delete": {
+            "post": {
+                "description": "Delete multiple keys by IDs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "keys"
+                ],
+                "summary": "Delete multiple keys",
+                "parameters": [
+                    {
+                        "description": "Keys IDs, payload example: {[key1, key2]}",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.actionResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apiErrors.apiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiErrors.apiError"
+                        }
+                    }
+                }
+            }
+        },
         "/keys/find": {
             "get": {
                 "description": "Get list of keys matching pattern",

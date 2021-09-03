@@ -1,6 +1,8 @@
 package api
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"reflect"
 	"strconv"
 
@@ -101,6 +103,43 @@ func (s *Server) DelKey(c *gin.Context) {
 	ok := actionResponse{
 		Result:   "OK",
 		Affected: res,
+	}
+
+	c.JSON(200, ok)
+}
+
+// @Summary Delete multiple keys
+// @Description Delete multiple keys by IDs
+// @Tags keys
+// @Produce json
+// @Param payload body string true "Keys IDs, payload example: {[key1, key2]}"
+// @Success 200 {object} actionResponse
+// @Failure 404 {object} apiErrors.apiError
+// @Failure 500 {object} apiErrors.apiError
+// @Router /keys/delete [post]
+func (s *Server) DelKeys(c *gin.Context) {
+	jsonData, err := ioutil.ReadAll(c.Request.Body)
+
+	if err != nil {
+		s.internalServerError(err.Error(), c)
+		return
+	}
+
+	var ids []string
+	json.Unmarshal(jsonData, &ids)
+
+	var i int64 = 0
+	for _, id := range ids {
+		res, err := s.queryService.Del(id)
+		if err != nil || res == 0 {
+			continue
+		}
+		i++
+	}
+
+	ok := actionResponse{
+		Result:   "OK",
+		Affected: i,
 	}
 
 	c.JSON(200, ok)

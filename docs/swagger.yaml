@@ -111,6 +111,34 @@ paths:
       summary: Get key
       tags:
       - keys
+  /keys/delete:
+    post:
+      description: Delete multiple keys by IDs
+      parameters:
+      - description: 'Keys IDs, payload example: {[key1, key2]}'
+        in: body
+        name: payload
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.actionResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiErrors.apiError'
+      summary: Delete multiple keys
+      tags:
+      - keys
   /keys/find:
     get:
       description: Get list of keys matching pattern
