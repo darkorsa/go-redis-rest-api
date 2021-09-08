@@ -249,38 +249,34 @@ func (s *Server) listPush(method string, c *gin.Context) {
 // @Tags lists
 // @Produce json
 // @Param id path string true "Key ID"
-// @Param value formData string true "Value"
-// @Param count query int false "Count"
+// @Param payload body string true "List elements to delete with corresponding count argument, payload example: {{"list-element" : 0}}"
 // @Success 200 {object} actionResponse
 // @Failure 400,500 {object} apiErrors.apiError
 // @Router /list/key/{id} [DELETE]
 func (s *Server) ListDel(c *gin.Context) {
-	var count int64 = 0
-	var err error
-
-	if c.PostForm("value") == "" {
-		s.badRequestError("value is empty", c)
-		return
-	}
-
-	if c.Query("count") != "" {
-		count, err = strconv.ParseInt(c.Query("count"), 10, 64)
-		if err != nil {
-			s.badRequestError("count parameter is invalid", c)
-			return
-		}
-	}
-
-	res, err := s.queryService.LRem(c.Param("id"), count, c.PostForm("value"))
+	jsonData, err := ioutil.ReadAll(c.Request.Body)
 
 	if err != nil {
 		s.internalServerError(err.Error(), c)
 		return
 	}
 
+	var m map[string]int
+	json.Unmarshal(jsonData, &m)
+
+	var i int64 = 0
+	var id string = c.Param("id")
+	for el, count := range m {
+		res, err := s.queryService.LRem(id, int64(count), el)
+		if err != nil || res == 0 {
+			continue
+		}
+		i++
+	}
+
 	ok := actionResponse{
 		Result:   "OK",
-		Affected: res,
+		Affected: i,
 	}
 
 	c.JSON(200, ok)

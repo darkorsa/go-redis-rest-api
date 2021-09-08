@@ -176,15 +176,13 @@ paths:
         name: id
         required: true
         type: string
-      - description: Value
-        in: formData
-        name: value
+      - description: 'List elements to delete with corresponding count argument, payload
+          example: {{'
+        in: body
+        name: payload
         required: true
-        type: string
-      - description: Count
-        in: query
-        name: count
-        type: integer
+        schema:
+          type: string
       produces:
       - application/json
       responses:

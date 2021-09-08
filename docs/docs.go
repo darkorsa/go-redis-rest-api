@@ -283,17 +283,13 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "Value",
-                        "name": "value",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Count",
-                        "name": "count",
-                        "in": "query"
+                        "description": "List elements to delete with corresponding count argument, payload example: {{",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
