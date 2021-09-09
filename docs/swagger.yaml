@@ -113,14 +113,18 @@ paths:
       - keys
   /keys/delete:
     post:
+      consumes:
+      - application/json
       description: Delete multiple keys by IDs
       parameters:
-      - description: 'Keys IDs, payload example: {[key1, key2]}'
+      - description: Keys IDs
         in: body
         name: payload
         required: true
         schema:
-          type: string
+          items:
+            type: string
+          type: array
       produces:
       - application/json
       responses:
@@ -168,6 +172,8 @@ paths:
       - keys
   /list/key/{id}:
     delete:
+      consumes:
+      - application/json
       description: Removes the first count occurrences of elements equal to element
         from the list stored at key.
       parameters:
@@ -176,13 +182,14 @@ paths:
         name: id
         required: true
         type: string
-      - description: 'List elements to delete with corresponding count argument, payload
-          example: {{'
+      - description: List elements to delete with corresponding count argument
         in: body
         name: payload
         required: true
         schema:
-          type: string
+          additionalProperties:
+            type: integer
+          type: object
       produces:
       - application/json
       responses:

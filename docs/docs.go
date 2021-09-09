@@ -52,6 +52,9 @@ var doc = `{
         "/keys/delete": {
             "post": {
                 "description": "Delete multiple keys by IDs",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -61,12 +64,15 @@ var doc = `{
                 "summary": "Delete multiple keys",
                 "parameters": [
                     {
-                        "description": "Keys IDs, payload example: {[key1, key2]}",
+                        "description": "Keys IDs",
                         "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     }
                 ],
@@ -267,6 +273,9 @@ var doc = `{
             },
             "delete": {
                 "description": "Removes the first count occurrences of elements equal to element from the list stored at key.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -283,12 +292,15 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "description": "List elements to delete with corresponding count argument, payload example: {{",
+                        "description": "List elements to delete with corresponding count argument",
                         "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
                         }
                     }
                 ],

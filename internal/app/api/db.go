@@ -111,8 +111,9 @@ func (s *Server) DelKey(c *gin.Context) {
 // @Summary Delete multiple keys
 // @Description Delete multiple keys by IDs
 // @Tags keys
+// @Accept json
 // @Produce json
-// @Param payload body string true "Keys IDs, payload example: {[key1, key2]}"
+// @Param payload body []string true "Keys IDs"
 // @Success 200 {object} actionResponse
 // @Failure 404 {object} apiErrors.apiError
 // @Failure 500 {object} apiErrors.apiError
@@ -247,9 +248,10 @@ func (s *Server) listPush(method string, c *gin.Context) {
 // @Summary List delete
 // @Description Removes the first count occurrences of elements equal to element from the list stored at key.
 // @Tags lists
+// @Accept json
 // @Produce json
 // @Param id path string true "Key ID"
-// @Param payload body string true "List elements to delete with corresponding count argument, payload example: {{"list-element" : 0}}"
+// @Param payload body map[string]int true "List elements to delete with corresponding count argument"
 // @Success 200 {object} actionResponse
 // @Failure 400,500 {object} apiErrors.apiError
 // @Router /list/key/{id} [DELETE]
